@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "567820327934",
+    "project_id": "kanban-e3ef6",
+    "storage_bucket": "kanban-e3ef6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:567820327934:android:68ea9564a7faa622dc7eaf",
+        "android_client_info": {
+          "package_name": "com.clara.kanban"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuQsoRANESHcU1Plz3fmrEoVwPWw7TaOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
