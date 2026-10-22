@@ -19,8 +19,6 @@ class RegisterFragment : Fragment() {
     private var _binding: FragmentRegisterBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var auth: FirebaseAuth
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -46,14 +44,36 @@ class RegisterFragment : Fragment() {
     private fun valideData(){
         val email = binding.editTextEmail.text.toString().trim()
         val senha = binding.editTextSenha.text.toString().trim()
+
         if(email.isNotBlank()) {
             if (senha.isNotBlank()) {
-                findNavController().navigate(R.id.action_global_homeFragment)
+                registerUser(email, senha)
             } else {
                 showBottomSheet(message = getString(R.string.password_empty_register_gragment))
             }
-        }else{
+        } else {
             showBottomSheet(message = getString(R.string.email_empty_register_fragment))
+        }
+    }
+
+    private fun registerUser(email: String, password: String) {
+        try {
+            val auth = FirebaseAuth.getInstance()
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        findNavController().navigate(R.id.action_global_homeFragment)
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            task.exception?.message ?: "Erro ao cadastrar usuário",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), e.message.toString(), Toast.LENGTH_SHORT).show()
         }
     }
 

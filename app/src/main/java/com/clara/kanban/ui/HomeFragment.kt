@@ -1,13 +1,17 @@
 package com.clara.kanban.ui
+
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.clara.kanban.R
 import com.clara.kanban.databinding.FragmentHomeBinding
 import com.clara.kanban.ui.adapter.ViewPagerAdapter
+import com.clara.kanban.util.showBottomSheet
 import com.google.android.material.tabs.TabLayoutMediator
+import com.google.firebase.auth.FirebaseAuth
 
 
 class HomeFragment : Fragment() {
@@ -15,19 +19,40 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    private lateinit var auth: FirebaseAuth
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentHomeBinding.inflate(inflater,container,false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        auth = FirebaseAuth.getInstance()
+
+        initListeners()
         initTabs()
     }
+
+    private fun initListeners() {
+        binding.btnLogout.setOnClickListener {
+            showBottomSheet(
+                R.string.text_button_dialog_confirm_logout,
+                R.string.text_title_dialog_confirm_logout,
+                getString(R.string.text_message_dialog_confirm_logout),
+                onClick = {
+                    auth.signOut()
+                    findNavController().navigate(R.id.action_homeFragment_to_autentication)
+                }
+            )
+        }
+    }
+
     private fun initTabs() {
         val pageAdapter = ViewPagerAdapter(requireActivity())
         binding.viewPager.adapter = pageAdapter
@@ -37,7 +62,7 @@ class HomeFragment : Fragment() {
 
         binding.viewPager.offscreenPageLimit = pageAdapter.itemCount
 
-        TabLayoutMediator(binding.tabs, binding.viewPager){tab, position ->
+        TabLayoutMediator(binding.tabs, binding.viewPager){ tab, position ->
             tab.text = getString(pageAdapter.getTitle(position))
         }.attach()
     }
